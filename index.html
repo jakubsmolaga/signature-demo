@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Signature Demo</title>
+    <style>
+      html {
+        --accent: #faa81b;
+        --background: #f9f9f9;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--accent);
+        background-color: var(--background);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      }
+      canvas {
+        border: 2px dashed var(--accent);
+        width: 100%;
+        max-width: 800px;
+        height: 300px;
+        cursor: crosshair;
+      }
+      button {
+        margin: 10px;
+        font-family: sans-serif;
+        color: var(--background);
+        background-color: var(--accent);
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        pointer-events: all;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Signature Demo</h1>
+    <canvas id="canvas"></canvas>
+    <a id="download" download="signature.png" hidden></a>
+    <div>
+      <button id="clear">Clear</button>
+      <button id="save">Save</button>
+    </div>
+
+    <script type="module">
+      import SignaturePad from "https://cdn.jsdelivr.net/npm/signature_pad@5.0.3/+esm";
+
+      // create pad
+      const canvas = document.getElementById("canvas");
+      const signaturePad = new SignaturePad(canvas);
+
+      // handle resizing
+      function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+        signaturePad.clear();
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      // handle clear
+      const clearButton = document.getElementById("clear");
+      clearButton.addEventListener("click", () => {
+        signaturePad.clear();
+      });
+
+      // handle save
+      const saveAnchor = document.getElementById("download");
+      const saveButton = document.getElementById("save");
+      saveButton.addEventListener("click", () => {
+        saveAnchor.href = signaturePad.toDataURL();
+        saveAnchor.click();
+      });
+    </script>
+  </body>
+</html>
